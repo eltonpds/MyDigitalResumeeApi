@@ -31,7 +31,6 @@ namespace MyDigitalResumeeApi.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request:
-        ///
         ///     POST /Usuario
         ///     {
         ///        "nome": "Elton Santos",
@@ -47,13 +46,19 @@ namespace MyDigitalResumeeApi.Controllers
         ///        "estado": "Pernambuco",
         ///        "pais": "Brasil"
         ///     }
-        ///
         /// </remarks>
         /// <returns></returns>
         [HttpPost]
         public ActionResult InsertUser(Usuario usuario)
         {
             _connection.Execute("INSERT INTO Usuario VALUES(@Nome, @Email, @Senha, @Cpf, @DataNascimento, @Celular, @Cep, @Endereco, @Bairro, @Cidade, @Estado, @Pais)", usuario);
+            return Ok();
+        }
+
+        [HttpPut]
+        public ActionResult UpdateUser(Usuario usuario)
+        {
+            _connection.Execute("UPDATE Usuario SET Nome = @Nome, Email = @Email, Senha = @Senha, Cpf = @Cpf, DataNascimento = @DataNascimento, Celular = @Celular, Cep = @Cep, Endereco = @Endereco, Bairro = @Bairro, Cidade = @Cidade, Estado = @Estado, Pais = @Pais WHERE Id = @Id", usuario);
             return Ok();
         }
     }
