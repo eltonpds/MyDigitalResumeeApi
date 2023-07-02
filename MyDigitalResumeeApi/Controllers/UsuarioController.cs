@@ -24,9 +24,20 @@ namespace MyDigitalResumeeApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Usuario>> GetAllUsers()
         {
-            IEnumerable<Usuario> usuarios = _sqlConnection.Query<Usuario>("SELECT Nome, Email, Cpf, DataNascimento, Sexo, Celular, Cep, Endereco, Bairro, Cidade, Estado, Pais");
+            try
+            {
+                IEnumerable<Usuario> usuarios = _sqlConnection.Query<Usuario>("SELECT Nome, Email, Cpf, DataNascimento, Sexo, Celular, Cep, Endereco, Bairro, Cidade, Estado, Pais FROM Usuario");
 
-            return Ok(usuarios);
+                return Ok(usuarios);
+            }
+            catch (SqlException)
+            {
+                return BadRequest("Erro ao tentar conectar com o banco de dados!");
+            }
+            catch (Exception)
+            {
+                return BadRequest("Sistema indisponível no momento");
+            }
         }
 
         /// <summary>
@@ -37,11 +48,22 @@ namespace MyDigitalResumeeApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<Usuario> GetUsuarioPorId(int id)
         {
-            Usuario usuario = _sqlConnection.QueryFirst<Usuario>("SELECT Nome, Email, Cpf, DataNascimento, Sexo, Celular, Cep, Endereco, Bairro, Cidade, Estado, Pais FROM Usuario WHERE Id = @Id", new
+            try
             {
-                @Id = id
-            });
-            return Ok(usuario);
+                Usuario usuario = _sqlConnection.QueryFirst<Usuario>("SELECT Nome, Email, Cpf, DataNascimento, Sexo, Celular, Cep, Endereco, Bairro, Cidade, Estado, Pais FROM Usuario WHERE Id = @Id", new
+                {
+                    @Id = id
+                });
+                return Ok(usuario);
+            }
+            catch (SqlException)
+            {
+                return BadRequest("Erro ao tentar conectar com o banco de dados!");
+            }
+            catch (Exception)
+            {
+                return BadRequest("Sistema indisponível no momento");
+            }
         }
 
         /// <summary>
@@ -70,22 +92,55 @@ namespace MyDigitalResumeeApi.Controllers
         [HttpPost]
         public ActionResult InserirUsuario(Usuario usuario)
         {
-            _sqlConnection.Execute("INSERT INTO Usuario VALUES(@Nome, @Email, @Senha, @Cpf, @DataNascimento, @Sexo, @Celular, @Cep, @Endereco, @Bairro, @Cidade, @Estado, @Pais)", usuario);
-            return Ok();
+            try
+            {
+                _sqlConnection.Execute("INSERT INTO Usuario VALUES(@Nome, @Email, @Senha, @Cpf, @DataNascimento, @Sexo, @Celular, @Cep, @Endereco, @Bairro, @Cidade, @Estado, @Pais)", usuario);
+                return Ok();
+            }
+            catch (SqlException)
+            {
+                return BadRequest("Erro ao tentar conectar com o banco de dados!");
+            }
+            catch (Exception)
+            {
+                return BadRequest("Sistema indisponível no momento");
+            }
         }
 
         [HttpPut]
         public ActionResult AtualizarUsuario(Usuario usuario)
         {
-            _sqlConnection.Execute("UPDATE Usuario SET Nome = @Nome, Email = @Email, Senha = @Senha, Cpf = @Cpf, DataNascimento = @DataNascimento, Sexo = @Sexo, Celular = @Celular, Cep = @Cep, Endereco = @Endereco, Bairro = @Bairro, Cidade = @Cidade, Estado = @Estado, Pais = @Pais WHERE Id = @Id", usuario);
-            return Ok();
+            try
+            {
+                _sqlConnection.Execute("UPDATE Usuario SET Nome = @Nome, Email = @Email, Senha = @Senha, Cpf = @Cpf, DataNascimento = @DataNascimento, Sexo = @Sexo, Celular = @Celular, Cep = @Cep, Endereco = @Endereco, Bairro = @Bairro, Cidade = @Cidade, Estado = @Estado, Pais = @Pais WHERE Id = @Id", usuario);
+                return Ok();
+            }
+            catch (SqlException)
+            {
+                return BadRequest("Erro ao tentar conectar com o banco de dados!");
+            }
+            catch (Exception)
+            {
+                return BadRequest("Sistema indisponível no momento");
+            }
         }
 
         [HttpDelete]
         public ActionResult DeletarUsuario(int id)
         {
-            _sqlConnection.Execute("DELETE FROM Usuario WHERE Id = @Id", new { @Id = id });
-            return Ok();
+            try
+            {
+                _sqlConnection.Execute("DELETE FROM Usuario WHERE Id = @Id", new { @Id = id });
+                return Ok();
+            }
+            catch (SqlException)
+            {
+                return BadRequest("Erro ao tentar conectar com o banco de dados!");
+            }
+            catch (Exception)
+            {
+                return BadRequest("Sistema indisponível no momento");
+            }
         }
     }
 }
