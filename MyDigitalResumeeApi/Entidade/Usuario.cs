@@ -1,4 +1,7 @@
-﻿namespace MyDigitalResumeeApi.Entidade
+﻿using MyDigitalResumeeApi.Enums;
+using System.ComponentModel.DataAnnotations;
+
+namespace MyDigitalResumeeApi.Entidade
 {
     public class Usuario
     {
@@ -8,6 +11,7 @@
         public string Senha { get; set; } = string.Empty;
         public string Cpf { get; set; } = string.Empty;
         public DateTime DataNascimento { get; set; }
+        public SexoEnum Sexo { get; set; }
         public string Celular { get; set; } = string.Empty;
         public string Cep { get; set; } = string.Empty;
         public string Endereco { get; set; } = string.Empty;
