@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
+using MyDigitalResumeeApi.Configuracao;
 using MyDigitalResumeeApi.Entidade;
 using System.Data.SqlClient;
 
@@ -9,27 +10,27 @@ namespace MyDigitalResumeeApi.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-        private readonly SqlConnection _connection;
-
-        public UsuarioController(IConfiguration configuration)
-        {
-            _configuration = configuration;
-            _connection = new SqlConnection(_configuration.GetConnectionString("MyDigitalResumeeDb"));
-        }
-
+        /// <summary>
+        /// Retorna todos os usuários cadastrados
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult<IEnumerable<Usuario>> GetAllUsers()
         {
-            IEnumerable<Usuario> usuarios = _connection.Query<Usuario>("SELECT Nome, Email, Cpf, DataNascimento, Celular, Cep, Endereco, Bairro, Cidade, Estado, Pais");
+            IEnumerable<Usuario> usuarios = Conexao.SqlConnection.Query<Usuario>("SELECT Nome, Email, Cpf, DataNascimento, Celular, Cep, Endereco, Bairro, Cidade, Estado, Pais");
 
             return Ok(usuarios);
         }
 
+        /// <summary>
+        /// Retornar um usuário de acordo com o Id informado
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public ActionResult<Usuario> GetUsuarioPorId(int id)
         {
-            Usuario usuario = _connection.QueryFirst<Usuario>("SELECT Nome, Email, Cpf, DataNascimento, Celular, Cep, Endereco, Bairro, Cidade, Estado, Pais FROM Usuario WHERE Id = @Id", new
+            Usuario usuario = Conexao.SqlConnection.QueryFirst<Usuario>("SELECT Nome, Email, Cpf, DataNascimento, Celular, Cep, Endereco, Bairro, Cidade, Estado, Pais FROM Usuario WHERE Id = @Id", new
             {
                 @Id = id
             });
@@ -40,7 +41,7 @@ namespace MyDigitalResumeeApi.Controllers
         /// Inserir um novo usuário
         /// </summary>
         /// <remarks>
-        /// Sample request:
+        /// Exemplo de requisição:
         ///     POST /Usuario
         ///     {
         ///        "nome": "Elton Santos",
@@ -61,21 +62,21 @@ namespace MyDigitalResumeeApi.Controllers
         [HttpPost]
         public ActionResult InserirUsuario(Usuario usuario)
         {
-            _connection.Execute("INSERT INTO Usuario VALUES(@Nome, @Email, @Senha, @Cpf, @DataNascimento, @Celular, @Cep, @Endereco, @Bairro, @Cidade, @Estado, @Pais)", usuario);
+            Conexao.SqlConnection.Execute("INSERT INTO Usuario VALUES(@Nome, @Email, @Senha, @Cpf, @DataNascimento, @Celular, @Cep, @Endereco, @Bairro, @Cidade, @Estado, @Pais)", usuario);
             return Ok();
         }
 
         [HttpPut]
         public ActionResult AtualizarUsuario(Usuario usuario)
         {
-            _connection.Execute("UPDATE Usuario SET Nome = @Nome, Email = @Email, Senha = @Senha, Cpf = @Cpf, DataNascimento = @DataNascimento, Celular = @Celular, Cep = @Cep, Endereco = @Endereco, Bairro = @Bairro, Cidade = @Cidade, Estado = @Estado, Pais = @Pais WHERE Id = @Id", usuario);
+            Conexao.SqlConnection.Execute("UPDATE Usuario SET Nome = @Nome, Email = @Email, Senha = @Senha, Cpf = @Cpf, DataNascimento = @DataNascimento, Celular = @Celular, Cep = @Cep, Endereco = @Endereco, Bairro = @Bairro, Cidade = @Cidade, Estado = @Estado, Pais = @Pais WHERE Id = @Id", usuario);
             return Ok();
         }
 
         [HttpDelete]
         public ActionResult DeletarUsuario(int id)
         {
-            _connection.Execute("DELETE FROM Usuario WHERE Id = @Id", new { @Id = id });
+            Conexao.SqlConnection.Execute("DELETE FROM Usuario WHERE Id = @Id", new { @Id = id });
             return Ok();
         }
     }
